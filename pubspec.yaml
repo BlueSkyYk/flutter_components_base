@@ -1,8 +1,8 @@
-name: flutter_components
+name: flutter_components_base
 description: "Some common components."
-version: 0.0.6
-homepage: https://github.com/BlueSkyYk/flutter_component
-repository: https://github.com/BlueSkyYk/flutter_component.git
+version: 0.0.7
+homepage: https://github.com/BlueSkyYk/flutter_components_base
+repository: https://github.com/BlueSkyYk/flutter_components_base.git
 
 environment:
   sdk: ^3.9.0
