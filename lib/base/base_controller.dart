@@ -13,42 +13,54 @@ abstract class BaseController {
 
   TickerProvider? _tickerProvider;
 
+  TickerProvider? get tickerProvider => _tickerProvider;
+
   final ValueNotifier<bool> canGesturePop = ValueNotifier<bool>(true);
 
-  void initTickerProvider(TickerProvider provider) {
+  void setTickerProvider(TickerProvider provider) {
     _tickerProvider = provider;
   }
 
-  @mustCallSuper
-  void onInit() {
-    _isInitialized = true;
+  void removeTickerProvider() {
+    _tickerProvider = null;
   }
 
-  @mustCallSuper
+  void pageInit() {
+    _isInitialized = true;
+    onPageInit();
+  }
+
+  void firstFrameRendering() {
+    onFirstFrameRendering();
+  }
+
+  void pageClose() {
+    _isDisposed = true;
+    onPageClose();
+  }
+
+  @protected
+  void onPageInit() {}
+
+  @protected
   void onFirstFrameRendering() {}
 
-  @mustCallSuper
-  void onShow() {
-    _isVisible = true;
-  }
+  @protected
+  void onPageShow() {}
 
-  @mustCallSuper
-  void onHide() {
-    _isVisible = false;
-  }
+  @protected
+  void onPageHide() {}
 
-  @mustCallSuper
-  void onClose() {
-    _isDisposed = true;
-  }
-
-  TickerProvider? get tickerProvider => _tickerProvider;
+  @protected
+  void onPageClose() {}
 
   void onUpdateVisible(bool visible) {
     if (visible) {
-      onShow();
+      _isVisible = true;
+      onPageShow();
     } else {
-      onHide();
+      _isVisible = false;
+      onPageHide();
     }
   }
 

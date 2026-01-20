@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_components/component/app_route_observer.dart';
 
+import '../component/app_route_observer.dart';
 import 'base_controller.dart';
 
 abstract class BasePage<Controller extends BaseController>
@@ -57,19 +57,20 @@ class _BasePageWrapperState extends State<_BasePageWrapper>
   bool _isVisible = false;
   bool _isInitFirstFrameCallback = false;
   bool _isAppInForeground = true;
+  bool _firstFrameDone = false;
 
   bool get isTopPage =>
       _route != null && appRouteObserver.currentTopRoute == _route;
 
-  Widget? _content;
-
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) widget.initPage(context);
+    });
     WidgetsBinding.instance.addObserver(this);
-    widget.controller.initTickerProvider(this);
-    widget.controller.onInit();
-    widget.initPage(context);
+    widget.controller.setTickerProvider(this);
+    widget.controller.pageInit();
   }
 
   @override
@@ -85,7 +86,7 @@ class _BasePageWrapperState extends State<_BasePageWrapper>
         _isInitFirstFrameCallback = true;
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) {
-            widget.controller.onFirstFrameRendering();
+            widget.controller.firstFrameRendering();
           }
         });
       }
@@ -94,8 +95,7 @@ class _BasePageWrapperState extends State<_BasePageWrapper>
 
   @override
   Widget build(BuildContext context) {
-    _content ??= widget.pageBuilder.call(context);
-    return _content!;
+    return widget.pageBuilder(context);
   }
 
   @override
@@ -105,7 +105,8 @@ class _BasePageWrapperState extends State<_BasePageWrapper>
       appRouteObserver.unsubscribe(this);
     }
     _route = null;
-    widget.controller.onClose();
+    widget.controller.removeTickerProvider();
+    widget.controller.pageClose();
     super.dispose();
   }
 
