@@ -154,12 +154,6 @@ class _BasePageWrapperState extends State<_BasePageWrapper>
     _updateVisibility();
   }
 
-  void updateItemVisibility(bool visible) {
-    final nowVisible =
-        visible && _isAppInForeground && (_route?.isCurrent ?? false);
-    _updateVisibilityReal(nowVisible);
-  }
-
   void _updateVisibility() {
     final nowVisible = _isAppInForeground && (_route?.isCurrent ?? false);
     _updateVisibilityReal(nowVisible);
